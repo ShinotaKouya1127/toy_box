@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>stack</title>
+	<script type="text/javascript">
+		const WAIT = 33;	//waiting time 
+		const NUM = 7;
+		const WIDTH = 120;
+		const HEIGHT = 25;
+		var ctx;			//getContext 2d access
+		var speedX = 5.0;
+		var speedY = 1.0;
+		
+		
+		var loc = new Array(NUM);	//initial position
+		var locX = new Array(NUM);
+		var locY = new Array(NUM);	
+		var bottom = new Array(NUM);	//stack  bottom
+		var ebottom = new Array(NUM); 
+		var waitTime = new Array(NUM);
+		var waitTime2 = new Array(NUM);
+		var waitRestart = WAIT * 3;
+		var flg0 = new Array(NUM);
+		var flg1 = new Array(NUM);
+		var flg2 = new Array(NUM);
+		var flg3 = new Array(NUM);
+		var flg4 = new Array(NUM);
+		var flg5 = new Array(NUM);
+
+		//eighth push first pop
+		var flg = new Array(NUM);
+		var btom = 200;
+		var wait = WAIT;
+		var wait2 = WAIT*4;
+		var x = 100;
+		var y = 50;
+		
+		//nineth push second pop
+		var anoFlg = new Array(NUM);
+		var anoBottom = 200;
+		var anoWait = WAIT;	//waiting parameter (1s)
+		var anoWait2 = WAIT*4;
+		var anoX = 100; 
+		var anoY = 460;
+		
+		
+		function init(){
+			canvas = document.getElementById('canvas');
+			if(canvas.getContext){
+				ctx = canvas.getContext('2d');
+				for(var i = 0; i < NUM; i++){
+					locX[i] = 100; 
+					loc[NUM-1-i]=locY[i] = i * 50 + 110;
+					bottom[i] = 375 + i * -25;
+					ebottom[NUM-1-i] = 390 + i * - 35; 
+					waitTime[NUM-1-i] = WAIT + i * WAIT;
+					waitTime2[NUM-1-i] = WAIT * 5 + i * WAIT;
+					flg0[i] = 0;
+					flg1[i] = 0;
+					flg2[i] = 0;
+					flg3[i] = 0;
+					flg4[i] = 0;
+					flg5[i] = 0; 
+					flg[i] = 0;
+					anoFlg[i] =0;
+				}
+				setInterval(draw,33);
+			}
+		}
+		
+		
+		//animation engine
+		function draw(){
+			ctx.globalCompositeOperation = "source-over";
+			
+			//stack base
+			ctx.beginPath();
+			ctx.moveTo(320,150);
+			ctx.lineTo(340,150);
+			ctx.moveTo(340,150);
+			ctx.lineTo(340,400);
+			ctx.moveTo(340,400);				
+			ctx.lineTo(460,400);
+			ctx.moveTo(460,400);
+			ctx.lineTo(460,150);
+			ctx.moveTo(460,150);
+			ctx.lineTo(480,150);
+			ctx.closePath();
+			ctx.stroke();
+			
+			
+			ctx.globalCompositeOperation = "lighter";
+			ctx.clearRect(anoX,anoY,WIDTH,HEIGHT);
+			ctx.clearRect(x,y,WIDTH,HEIGHT);
+			
+			
+			//eighth push First pop
+			if(anoFlg[0] == 0){
+				if(anoY == 100){
+					anoFlg[0] = 1;
+				}else if(anoY > 100){
+					anoY -= speedY; 
+				}
+			}
+
+			if(anoFlg[1] == 0 && anoFlg[0] == 1){
+				if(anoY == anoBottom){
+					anoFlg[1] = 1;
+				}
+				if(anoX < 340){
+					anoX += speedX;
+				}else if(anoY < anoBottom){
+					anoY += speedY;
+				}
+			}
+			
+			if(anoFlg[2] == 0 && (anoFlg[0] & anoFlg[1]) == 1){
+				if(anoX == 600){
+					anoFlg[2] = 1;
+				}
+				if(anoWait > 0){
+					anoWait--;
+				}else if(anoWait == 0 && anoY > 100){
+					anoY -= speedY;
+				}else if(anoY == 100 && anoX < 600){
+					anoX += speedX;
+				}
+			}
+			
+			if(anoFlg[3] == 0 && (anoFlg[0] & anoFlg[1] & anoFlg[2]) == 1){
+				if(anoY == 460){
+					anoFlg[3] = 1;	
+				}
+				if(anoY < 460){
+					anoY += speedY;
+				}	
+			}
+			
+			if(anoFlg[4] == 0 && (anoFlg[0] & anoFlg[1] & anoFlg[2] & anoFlg[3] & flg3[1]) == 1){
+				if(anoWait2 > 0){
+					anoWait2--;
+				}
+				else if(anoWait2 == 0 && anoX > 100){
+					anoX -= speedX;
+				}
+			}
+			
+			
+			
+			//nineth push second pop
+			if(flg[0] == 0&& (anoFlg[3] == 0 && (anoFlg[0] & anoFlg[1] & anoFlg[2]) == 1)){
+				if(y == 100 && x == 340){
+					flg[0] = 1;
+				}
+				if(y < 100){
+					y += speedX;
+				}
+				else if(y == 100 && x < 340){
+					x += speedX;
+				}
+			}
+			
+			if(flg[1] == 0 && flg[0] == 1 ){
+				if(y == btom){
+					flg[1] = 1;
+				}
+				if(y < btom){
+					y += speedY;
+				}
+			}
+			
+			if(flg[2] == 0 && (flg[0] & flg[1]) == 1){
+				if(wait == 0 && y == 100){
+					flg[2] =1;
+				}
+				if(wait > 0){
+					wait--;
+				}
+				else if(wait == 0 && y > 100){
+					y -= speedY;
+				}
+			}
+			
+			if(flg[3] == 0 && (flg[0] & flg[1] & flg[2]) == 1 ){
+				if(x == 600 && y == 425){
+					flg[3] = 1;
+				}
+				if(x < 600){
+					x += speedX;
+				}
+				else if(x == 600 && y < 425 ){
+					y += speedY;	
+				}
+			}
+			
+			if( flg[4] == 0 && (flg[0] & flg[1] & flg[2] & flg[3] & flg3[0]) == 1 ){
+				if(y == 50 && x == 100){
+					flg[4] = 1;
+				}
+				if(wait2 > 0){
+					wait2--;
+				}
+				else if(wait2 == 0 &&  x > 100){
+					x -= speedX;
+				}
+				else if(x == 100 && y > 50){
+					y -= speedY;
+				} 
+				
+			}
+			
+			
+			
+			//stack main
+			for(var i = 0; i < NUM; i++){	
+				ctx.clearRect(locX[i],locY[i],WIDTH,HEIGHT); //pre-update delete 
+				
+				if(flg0[i] == 0){
+					if(locY[i] == 100){
+						flg0[i] = 1;
+					}else if(locY[i] > 100){
+						locY[i] -= speedY; 
+					}
+				}
+				
+				if(flg0[i] == 1 && flg1[i] == 0){
+					if(locY[i] == bottom[i]){
+						flg1[i] = 1;
+					}
+					if(locX[i] < 340){
+							locX[i] += speedX;
+					}else if(locY[i] < bottom[i] ){
+						locY[i] += speedY;
+					}
+				}
+				
+				if(flg2[i] == 0 && wait == 0){
+					if(locY[i] == 100 ){
+						flg2[i] = 1;
+					}
+					if(waitTime[i] > 0){
+						waitTime[i]--;
+					}
+					else if(waitTime[i] == 0 && locY[i] > 100 ){
+						locY[i] -= speedY;
+					}
+				}
+				
+				if(flg3[i] == 0 && (flg0[i] & flg1[i] & flg2[i]) == 1 ){
+					if(locY[i] == ebottom[i]){
+						flg3[i] = 1;
+					}
+					if(locX[i]< 600)
+						locX[i] += speedX;
+					else if(locX[i] == 600 && locY[i] < ebottom[i]){
+						locY[i] +=  speedY;
+					}
+				}
+				
+				if(flg4[i] == 0 && (flg0[i] & flg1[i] & flg2[i] & flg3[0]) == 1){
+					if(locX[i] == 100 && locY[i] == 425){
+						flg4[i] = 1;
+					}
+					if(waitTime2[i] > 0){
+						waitTime2[i]--;
+					}
+					else if(waitTime2[i] == 0 && locY[i] < 425){
+						locY[i] += speedY;
+					}else if(locY[i] == 425 && locX[i] >100){
+						locX[i] -= speedX;
+					}
+				}
+				
+				if(flg5[i] == 0 && (flg0[i] & flg1[i] & flg2[i] & flg3[i] & flg4[i]) == 1){
+					if(locY[i] == loc[i]){
+						flg5[i] =1;
+					}
+					if(locY[i] > loc[i]){
+						locY[i] -= speedY;
+					}
+				}
+				
+				
+
+				//data update
+				ctx.beginPath();
+				ctx.fillRect(locX[i],locY[i],WIDTH,HEIGHT);
+				ctx.fillRect(anoX,anoY,WIDTH,HEIGHT);
+				ctx.fillRect(x,y,WIDTH,HEIGHT);
+				ctx.fill();
+				
+				
+				//restart
+				if(flg5[0] == 1 && waitRestart > 0){
+					waitRestart--;
+				}
+				else if(waitRestart == 0 && flg5[0] == 1){
+					
+					window.location.reload();
+				}
+			}
+			
+		}
+		
+	</script>
+	<style type="text/css">
+
+		canvas{ 
+			border: 1px solid #999; 
+			position: absolute;
+		}
+	</style>
+</head>
+<body onload='init();'>
+<canvas id="canvas" width="800" height="500"></canvas> 
+
+</body>
+</html>
